@@ -1,10 +1,8 @@
 package com.cout970.ps.lexer
 
-import com.cout970.ps.components.CompClass
-import com.cout970.ps.components.CompFun
-import com.cout970.ps.components.CompImport
-import com.cout970.ps.components.CompPackage
+import com.cout970.ps.components.*
 import com.cout970.ps.input.FileCharInputStream
+import com.cout970.ps.tokenizer.BufferedTokenStream
 import com.cout970.ps.tokenizer.TokenType
 import com.cout970.ps.tokenizer.Tokenizer
 import java.io.File
@@ -31,10 +29,22 @@ class ParserFile(file: File) {
                     throw DuplicatedElementException("Duplicated package directive at line: ${look.line}, column: ${look.column}, in file: ${look.file}")
                 }
             } else if (look.type == TokenType.IMPORT) {
-                compImports.add(ParserImport.parse(look, tokenizer))
+                compImports.add(ParserImport.parse(BufferedTokenStream(listOf(look), tokenizer)))
             } else if (look.type == TokenType.CLASS) {
-                compClasses.add(ParserClass.parse(look, tokenizer))
-            } else if(look.type != TokenType.LINE_FEED && look.type != TokenType.SEMICOLON){
+                compClasses.add(ParserClass.parse(BufferedTokenStream(listOf(look), tokenizer)))
+            } else if (look.type == TokenType.FUN) {
+                compFunctions.add(ParserFunction.parse(BufferedTokenStream(listOf(look), tokenizer)))
+            } else if (AccessModifier.isModifier(look.type)) {
+                val temp = look
+                look = tokenizer.readToken()
+                if(look.type == TokenType.FUN){
+                    compFunctions.add(ParserFunction.parse(BufferedTokenStream(listOf(temp, look), tokenizer)))
+                }else if(look.type == TokenType.CLASS){
+                    compClasses.add(ParserClass.parse(BufferedTokenStream(listOf(temp, look), tokenizer)))
+                }else{
+                    throw UnexpectedToken(look)
+                }
+            } else if (look.type != TokenType.LINE_FEED && look.type != TokenType.SEMICOLON) {
                 throw UnexpectedToken(look)
             }
             look = tokenizer.readToken()

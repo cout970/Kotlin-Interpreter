@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 class Test();
 
-fun main(args: Array<String>) {
+fun main() {
 
 }
+
+class Test2();

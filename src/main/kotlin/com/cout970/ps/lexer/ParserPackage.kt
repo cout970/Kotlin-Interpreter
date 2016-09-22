@@ -1,16 +1,16 @@
 package com.cout970.ps.lexer
 
 import com.cout970.ps.components.CompPackage
+import com.cout970.ps.tokenizer.ITokenStream
 import com.cout970.ps.tokenizer.Token
 import com.cout970.ps.tokenizer.TokenType
-import com.cout970.ps.tokenizer.Tokenizer
 
 /**
  * Created by cout970 on 2016/09/20.
  */
 object ParserPackage {
 
-    fun parse(first: Token, tk: Tokenizer): CompPackage {
+    fun parse(first: Token, tk: ITokenStream): CompPackage {
         var look = first
         look.expect(TokenType.PACKAGE, "package keyword")
         look = tk.readToken()

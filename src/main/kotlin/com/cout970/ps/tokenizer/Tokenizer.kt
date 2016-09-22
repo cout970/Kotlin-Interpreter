@@ -6,7 +6,7 @@ import java.util.regex.Pattern
 /**
  * Created by cout970 on 2016/09/19.
  */
-class Tokenizer(val stream: CharInputSteam) {
+class Tokenizer(val stream: CharInputSteam) : ITokenStream {
 
     companion object {
         val PATTERN_NUMBER = Pattern.compile("[0-9]+")
@@ -30,7 +30,7 @@ class Tokenizer(val stream: CharInputSteam) {
         file = stream.getFile()
     }
 
-    fun readToken(): Token {
+    override fun readToken(): Token {
         while (look == ' ' || look == '\t') {
             read()
         }
